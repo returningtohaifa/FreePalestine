@@ -57,39 +57,11 @@
       margin: 0 auto;
       padding: 0 1rem;
     }
-    /* Site branding: title filled with portrait image */
-    .site-branding {
-      display:flex;
-      align-items:center;
-      gap:1rem;
-    }
-    .site-title {
-      margin: 0;
+    h1 {
+      margin: 0 0 0.3rem 0;
       font-size: clamp(1.6rem, 2.2vw + 1rem, 2.2rem);
       line-height:1.05;
       letter-spacing: -0.01em;
-      font-weight: 700;
-    }
-    .title-image {
-      background-image: url("assets/images/ghassan-kanafani.jpg");
-      background-size: cover;
-      background-position: center;
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      display: inline-block;
-    }
-    .title-svg {
-      display: none;
-      width: 100%;
-      height: auto;
-    }
-    .sr-only {
-      position: absolute !important;
-      width: 1px; height: 1px;
-      padding: 0; margin: -1px;
-      overflow: hidden; clip: rect(0,0,0,0);
-      white-space: nowrap; border: 0;
     }
     .tagline {
       color: var(--muted);
@@ -101,15 +73,30 @@
     main {
       padding: 2rem 0 3rem;
     }
-    p { margin-bottom: 1rem; color: var(--text); }
-    .lead { color: var(--muted); max-width: 70ch; }
-    .arabic { margin-top: 1rem; font-size: 1rem; direction: rtl; text-align: right; }
-    footer { border-top: 1px solid var(--border); padding: 1.25rem 0; color: var(--muted); font-size: 0.95rem; }
-    @supports not (-webkit-background-clip: text) {
-      .title-image { display: none; }
-      .title-svg { display: block; }
+    p {
+      margin-bottom: 1rem;
+      color: var(--text);
     }
-    @media (min-width: 768px){ main { padding: 3rem 0 4rem; } }
+    .lead {
+      color: var(--muted);
+      max-width: 70ch;
+    }
+    .arabic {
+      margin-top: 1rem;
+      font-size: 1rem;
+      direction: rtl;
+      text-align: right;
+    }
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.25rem 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    /* Responsive tweaks */
+    @media (min-width: 768px){
+      main { padding: 3rem 0 4rem; }
+    }
   </style>
 </head>
 <body>
@@ -117,36 +104,22 @@
 
   <header>
     <div class="container">
-      <div class="site-branding" role="banner" aria-label="Site title">
-        <h1 class="site-title">
-          <span class="title-image" aria-hidden="true">Returning to Haifa – Palestine Uncensored</span>
-
-          <svg class="title-svg" viewBox="0 0 1200 120" role="img" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
-            <defs>
-              <pattern id="portraitPattern" patternUnits="userSpaceOnUse" width="1200" height="120">
-                <image href="assets/images/ghassan-kanafani.jpg" x="0" y="0" width="1200" height="120" preserveAspectRatio="xMidYMid slice" />
-              </pattern>
-            </defs>
-            <text x="0" y="86" font-size="64" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" fill="url(#portraitPattern)">
-              Returning to Haifa – Palestine Uncensored
-            </text>
-          </svg>
-
-          <span class="sr-only">Returning to Haifa – Palestine Uncensored</span>
-        </h1>
-        <div class="tagline">Land, history, and resistance against Zionist colonization.</div>
-      </div>
+      <h1>Returning to Haifa – Palestine Uncensored</h1>
+      <div class="tagline">Land, history, and resistance against Zionist colonization.</div>
     </div>
   </header>
 
   <main id="main" role="main">
     <div class="container">
-      <p class="lead"><strong>Returning to Haifa</strong> is a space dedicated to telling the truth about Palestine as a colonized land and a people fighting erasure. This site documents the history o[...]</p>
+      <p class="lead"><strong>Returning to Haifa</strong> is a space dedicated to telling the truth about Palestine as a colonized land and a people fighting erasure. This site documents the history o[...]
 
-      <p>We stand with Palestinian resistance as a legitimate struggle against colonial domination and refuse the language that hides these crimes behind words like “conflict” or “clashes.” <![...]</p>
+      <!-- TODO: Replace the following paragraph with your full content. The original Draft had "[...]" which indicates truncated text. -->
+      <p>We stand with Palestinian resistance as a legitimate struggle against colonial domination and refuse the language that hides these crimes behind words like “conflict” or “clashes.” <![...]
 
+      <!-- Arabic content marked with lang attribute for correct screen reader pronunciation and search engines -->
       <p class="arabic" lang="ar">فلسطين ليست “قضية معقّدة”، بل وطن تحت احتلال استعماري وشعب يرفض الإبادة والصمت.</p>
 
+      <!-- Consider adding navigation, articles, or links to resources, archives, contact, and a content warning if applicable. -->
     </div>
   </main>
 
