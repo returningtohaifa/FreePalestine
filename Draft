@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Returning to Haifa – Palestine Uncensored</title>
+  <meta name="description" content="Land, history, and resistance against Zionist colonization.">
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #111;
+      color: #f4f4f4;
+      line-height: 1.6;
+    }
+    header {
+      padding: 2.5rem 1.5rem;
+      border-bottom: 1px solid #333;
+      background: #000;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    h1 {
+      margin: 0 0 0.3rem 0;
+      font-size: 2.2rem;
+    }
+    .tagline {
+      color: #ccc;
+      font-size: 1rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    main {
+      padding: 2rem 1.5rem 3rem;
+    }
+    p {
+      margin-bottom: 1rem;
+    }
+    .arabic {
+      margin-top: 1rem;
+      font-size: 1rem;
+      direction: rtl;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Returning to Haifa – Palestine Uncensored</h1>
+      <div class="tagline">Land, history, and resistance against Zionist colonization.</div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <p><strong>Returning to Haifa</strong> is a space dedicated to telling the truth about Palestine as a colonized land and a people fighting erasure. This site documents the history of Palestine before Zionist settlement, the Nakba as a planned campaign of ethnic cleansing, and the ongoing reality of apartheid, siege, and displacement.</p>
+
+      <p>We stand with Palestinian resistance as a legitimate struggle against colonial domination and refuse the language that hides these crimes behind words like “conflict” or “clashes.” Our goal is to give people clear facts, accessible history, and tools to recognize propaganda – so that Palestine cannot be erased, on the ground or in memory.</p>
+
+      <p class="arabic">فلسطين ليست “قضية معقّدة”، بل وطن تحت احتلال استعماري وشعب يرفض الإبادة والصمت.</p>
+    </div>
+  </main>
+</body>
+</html>
