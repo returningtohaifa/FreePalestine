@@ -118,6 +118,25 @@
       color: var(--muted);
       font-size: 0.95rem;
     }
+    .home-nav a {
+  position: relative;
+  padding-left: 1rem; /* makes space for the triangle */
+}
+
+.home-nav a::before {
+  content: "";
+  position: absolute;
+  left: 0;      /* left edge of the link */
+  top: 0.35rem; /* vertical alignment */
+  width: 0;
+  height: 0;
+
+  /* triangle pointing DOWN */
+  border-left: 0.35rem solid transparent;
+  border-right: 0.35rem solid transparent;
+  border-top: 0.45rem solid var(--accent);
+}
+
 
     @media (min-width: 768px){
       main { padding: 3rem 0 4rem; }
@@ -132,7 +151,7 @@
     <div class="container">
       <h1>Returning to Haifa – Palestine Uncensored</h1>
       <div class="tagline">Land, history, and resistance against Zionist colonization.</div>
-      <nav style="margin-top:1rem; font-size:0.95rem;">
+      <nav class="home-nav" style="margin-top:1rem; font-size:0.95rem;">
   <a href="about.html" style="color:#e53935; margin-right:1rem;">About Returning to Haifa</a>
   <a href="timeline.html" style="color:#e53935;">Timeline of Palestine</a>
 </nav>
