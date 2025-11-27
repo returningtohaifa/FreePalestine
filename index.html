@@ -56,14 +56,14 @@
       margin: 0 auto;
       padding: 0 1rem;
     }
-    h1 {
-      margin: 0 0 0.3rem 0;
-    font-size: clamp(2rem, 4vw + 1rem, 4rem);
-      line-height:1.05;
-      letter-spacing: -0.01em;
-      font-weight: 1500;
-     
-    }
+h1 {
+  margin: 0 0 0.3rem 0;
+  font-size: clamp(2.4rem, 4vw + 1rem, 4rem); /* bigger */
+  line-height:1.05;
+  letter-spacing: -0.01em;
+  font-weight: 900; /* max valid weight */
+}
+
     .tagline {
       color: var(--muted);
       font-size: 0.95rem;
@@ -97,14 +97,17 @@
     @media (min-width: 768px){
       main { padding: 3rem 0 4rem; }
     }
-    .image-title {
+.image-title {
+  display: inline-block;
   background-image: url("title-fill.jpg");
   background-size: cover;
   background-position: center;
-  color: transparent;
   -webkit-background-clip: text;
   background-clip: text;
-    }
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  -webkit-text-stroke: 2px rgba(255,255,255,0.6);
+}
   </style>
 </head>
 <body>
