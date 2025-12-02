@@ -141,6 +141,115 @@
     @media (min-width: 768px){
       main { padding: 3rem 0 4rem; }
     }
+      /* === Quiz overlay styles === */
+
+    .quiz-overlay {
+      position: fixed;
+      inset: 0; /* top:0; right:0; bottom:0; left:0 combined */
+      background: rgba(0, 0, 0, 0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .quiz-hidden {
+      display: none;
+    }
+
+    .quiz-box {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      max-width: 480px;
+      width: 90%;
+      padding: 1.5rem 1.75rem;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.8);
+    }
+
+    .quiz-title {
+      font-size: 1.3rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .quiz-intro {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    .quiz-question {
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .quiz-option {
+      background: #151515;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.55rem 0.75rem;
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    }
+
+    .quiz-option:hover {
+      transform: translateY(-1px);
+      border-color: var(--accent);
+    }
+
+    .quiz-option.correct {
+      border-color: #4caf50;
+      background: #123017;
+    }
+
+    .quiz-option.wrong {
+      border-color: #f44336;
+      background: #3a1111;
+    }
+
+    .quiz-feedback {
+      font-size: 0.9rem;
+      color: var(--muted);
+      min-height: 1.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .quiz-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .quiz-button {
+      padding: 0.55rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.9rem;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .quiz-button.secondary {
+      background: transparent;
+      color: var(--muted);
+    }
+
+    .quiz-progress {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
   </style>
 </head>
 
@@ -189,6 +298,172 @@
       <div>© Returning to Haifa. All rights reserved.</div>
     </div>
   </footer>
+  <!-- Quiz overlay -->
+  <div id="quiz-overlay" class="quiz-overlay">
+    <div class="quiz-box">
+      <div class="quiz-title">Before we begin…</div>
+      <div class="quiz-intro">
+        A short three-question check. Not to judge you – but to show how much has been hidden from you about Palestine.
+      </div>
+
+      <div id="quiz-question" class="quiz-question"></div>
+
+      <div id="quiz-options" class="quiz-options">
+        <!-- options are inserted here by JavaScript -->
+      </div>
+
+      <div id="quiz-feedback" class="quiz-feedback"></div>
+
+      <div class="quiz-actions">
+        <button id="quiz-skip" class="quiz-button secondary">Skip quiz</button>
+        <div class="quiz-progress" id="quiz-progress"></div>
+        <button id="quiz-next" class="quiz-button">Next</button>
+      </div>
+    </div>
+  </div>
+   <script>
+    // Simple Palestine quiz for first-time visitors (for now: every load)
+    const quizData = [
+      {
+        question: "Was Palestine an \"empty land\" before Zionist colonization?",
+        options: [
+          "Yes, it was mostly empty and uninhabited.",
+          "No, it was a land with its own people, cities, and culture.",
+          "It was only a religious symbol, not a real place."
+        ],
+        correctIndex: 1,
+        explanation: "Palestine was a lived land with villages, cities, agriculture, and communities long before political Zionism. The \"empty land\" myth is propaganda used to erase the indigenous population."
+      },
+      {
+        question: "What does the Nakba (Catastrophe) refer to?",
+        options: [
+          "A simple border disagreement between two equal sides.",
+          "The planned ethnic cleansing and mass expulsion of Palestinians in 1948.",
+          "A natural disaster that hit the region in the 20th century."
+        ],
+        correctIndex: 1,
+        explanation: "The Nakba is the ongoing catastrophe beginning in 1948, when Zionist forces expelled around 750,000 Palestinians, destroyed hundreds of villages, and created a massive refugee population."
+      },
+      {
+        question: "Who assassinated Ghassan Kanafani?",
+        options: [
+          "He died in a car accident with no political context.",
+          "Palestinian factions in an internal dispute.",
+          "The Zionist occupation, via a car bomb in Beirut in 1972."
+        ],
+        correctIndex: 2,
+        explanation: "Ghassan Kanafani was assassinated by the Zionist occupation in 1972 in Beirut through a car bomb, which also killed his niece Lamis. He was targeted for his revolutionary political and literary work."
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let hasAnswered = false;
+
+    const quizOverlay = document.getElementById("quiz-overlay");
+    const quizQuestionEl = document.getElementById("quiz-question");
+    const quizOptionsEl = document.getElementById("quiz-options");
+    const quizFeedbackEl = document.getElementById("quiz-feedback");
+    const quizProgressEl = document.getElementById("quiz-progress");
+    const quizNextBtn = document.getElementById("quiz-next");
+    const quizSkipBtn = document.getElementById("quiz-skip");
+
+    function renderQuestion() {
+      const data = quizData[currentQuestion];
+      quizQuestionEl.textContent = data.question;
+      quizOptionsEl.innerHTML = "";
+      quizFeedbackEl.textContent = "";
+      hasAnswered = false;
+
+      data.options.forEach((optionText, index) => {
+        const btn = document.createElement("button");
+        btn.className = "quiz-option";
+        btn.textContent = optionText;
+        btn.addEventListener("click", () => handleAnswer(index, btn));
+        quizOptionsEl.appendChild(btn);
+      });
+
+      quizProgressEl.textContent = `Question ${currentQuestion + 1} of ${quizData.length}`;
+      quizNextBtn.textContent = currentQuestion === quizData.length - 1 ? "Finish" : "Next";
+      quizNextBtn.disabled = true;
+    }
+
+    function handleAnswer(selectedIndex, clickedButton) {
+      if (hasAnswered) return;
+      hasAnswered = true;
+
+      const data = quizData[currentQuestion];
+      const optionButtons = quizOptionsEl.querySelectorAll(".quiz-option");
+
+      optionButtons.forEach((btn, index) => {
+        if (index === data.correctIndex) {
+          btn.classList.add("correct");
+        }
+        if (index === selectedIndex && index !== data.correctIndex) {
+          btn.classList.add("wrong");
+        }
+        btn.disabled = true;
+      });
+
+      if (selectedIndex === data.correctIndex) {
+        score++;
+        quizFeedbackEl.textContent = "Correct. " + data.explanation;
+      } else {
+        quizFeedbackEl.textContent = "Not quite. " + data.explanation;
+      }
+
+      quizNextBtn.disabled = false;
+    }
+
+    function showFinalMessage() {
+      quizQuestionEl.textContent = "Quiz finished.";
+      quizOptionsEl.innerHTML = "";
+      quizProgressEl.textContent = "";
+
+      const total = quizData.length;
+      const resultText = `You scored ${score} out of ${total}.`;
+
+      let extra;
+      if (score === total) {
+        extra = "You already see through a lot of propaganda. This site is here to go even deeper.";
+      } else if (score >= 1) {
+        extra = "You know some of the truth already. This site exists to help fill in what has been hidden or distorted.";
+      } else {
+        extra = "If everything felt new: good. That means you are exactly where you need to be.";
+      }
+
+      quizFeedbackEl.textContent = resultText + " " + extra;
+      quizNextBtn.textContent = "Enter the site";
+    }
+
+    quizNextBtn.addEventListener("click", () => {
+      if (!hasAnswered && currentQuestion < quizData.length) {
+        // do nothing if they try to skip the answer
+        return;
+      }
+
+      if (currentQuestion < quizData.length - 1) {
+        currentQuestion++;
+        renderQuestion();
+      } else {
+        // finished questions, show final message or close
+        if (quizNextBtn.textContent === "Enter the site") {
+          quizOverlay.classList.add("quiz-hidden");
+        } else {
+          showFinalMessage();
+        }
+      }
+    });
+
+    quizSkipBtn.addEventListener("click", () => {
+      quizOverlay.classList.add("quiz-hidden");
+    });
+
+    // Show quiz when page loads
+    document.addEventListener("DOMContentLoaded", () => {
+      renderQuestion();
+    });
+  </script>
 
 </body>
 </html>
