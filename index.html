@@ -304,10 +304,10 @@
   <!-- Quiz overlay -->
  <div id="quiz-overlay" class="quiz-overlay quiz-hidden">
     <div class="quiz-box">
-      <div class="quiz-title">Before we begin…</div>
-      <div class="quiz-intro">
-        A short three-question check. Not to judge you – but to show how much has been hidden from you about Palestine.
-      </div>
+    <div id="quiz-title" class="quiz-title">Before we begin…</div>
+<div id="quiz-intro" class="quiz-intro">
+  A short three-question check. Not to judge you – but to show how much has been hidden from you about Palestine.
+</div>
 
       <div id="quiz-question" class="quiz-question"></div>
 
@@ -371,6 +371,8 @@
     const quizNextBtn = document.getElementById("quiz-next");
     const quizSkipBtn = document.getElementById("quiz-skip");
      const quizOpenLink = document.getElementById("quiz-open-link");
+     const quizTitleEl = document.getElementById("quiz-title");
+const quizIntroEl = document.getElementById("quiz-intro");
 
     function renderQuestion() {
       const data = quizData[currentQuestion];
@@ -419,27 +421,30 @@
       quizNextBtn.disabled = false;
     }
 
-    function showFinalMessage() {
-      quizQuestionEl.textContent = "Quiz finished.";
-      quizOptionsEl.innerHTML = "";
-      quizProgressEl.textContent = "";
+  function showFinalMessage() {
+  // Clear the intro and replace the title
+  quizTitleEl.textContent = "Result";
+  quizIntroEl.textContent = "";
 
-      const total = quizData.length;
-      const resultText = `You scored ${score} out of ${total}.`;
+  quizQuestionEl.textContent = "";
+  quizOptionsEl.innerHTML = "";
+  quizProgressEl.textContent = "";
 
-      let extra;
-      if (score === total) {
-        extra = "You already see through a lot of propaganda. This site is here to go even deeper.";
-      } else if (score >= 1) {
-        extra = "You know some of the truth already. This site exists to help fill in what has been hidden or distorted.";
-      } else {
-        extra = "If everything felt new: good. That means you are exactly where you need to be.";
-      }
+  const total = quizData.length;
+  const resultText = `You scored ${score} out of ${total}.`;
 
-      quizFeedbackEl.textContent = resultText + " " + extra;
-      quizNextBtn.textContent = "Enter the site";
-    }
+  let extra;
+  if (score === total) {
+    extra = "You already see through a lot of propaganda. This site is here to go even deeper.";
+  } else if (score >= 1) {
+    extra = "You know some of the truth already. This site exists to help fill in what has been hidden or distorted.";
+  } else {
+    extra = "If everything felt new: good. That means you are exactly where you need to be.";
+  }
 
+  quizFeedbackEl.textContent = resultText + " " + extra;
+  quizNextBtn.textContent = "Enter the site";
+}
     quizNextBtn.addEventListener("click", () => {
       if (!hasAnswered && currentQuestion < quizData.length) {
         // do nothing if they try to skip the answer
