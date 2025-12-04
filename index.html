@@ -445,10 +445,10 @@
         // do nothing if they try to skip the answer
         return;
       }
-
-      if (currentQuestion < quizData.length - 1) {
-        currentQuestion++;
-      } else {
+  if (currentQuestion < quizData.length - 1) {
+    currentQuestion++;
+    renderQuestion();   // <-- show the next question
+  } else {
     // finished questions, show final message or close
     if (quizNextBtn.textContent === "Enter the site") {
       localStorage.setItem("rthQuizDone", "true");
