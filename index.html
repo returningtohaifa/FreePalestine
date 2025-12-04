@@ -265,6 +265,7 @@
       <nav class="home-nav" style="margin-top:1rem; font-size:0.95rem;">
   <a href="about.html" style="color:#e53935; margin-right:1rem;">About Returning to Haifa</a>
   <a href="timeline.html" style="color:#e53935;">Timeline of Palestine</a>
+          <a href="#" id="quiz-open-link" style="color:#e53935;">Take the quiz</a>
 </nav>
 
 
@@ -301,7 +302,7 @@
     </div>
   </footer>
   <!-- Quiz overlay -->
-  <div id="quiz-overlay" class="quiz-overlay">
+ <div id="quiz-overlay" class="quiz-overlay quiz-hidden">
     <div class="quiz-box">
       <div class="quiz-title">Before we begin…</div>
       <div class="quiz-intro">
@@ -369,6 +370,7 @@
     const quizProgressEl = document.getElementById("quiz-progress");
     const quizNextBtn = document.getElementById("quiz-next");
     const quizSkipBtn = document.getElementById("quiz-skip");
+     const quizOpenLink = document.getElementById("quiz-open-link");
 
     function renderQuestion() {
       const data = quizData[currentQuestion];
@@ -446,25 +448,44 @@
 
       if (currentQuestion < quizData.length - 1) {
         currentQuestion++;
-        renderQuestion();
       } else {
-        // finished questions, show final message or close
-        if (quizNextBtn.textContent === "Enter the site") {
-          quizOverlay.classList.add("quiz-hidden");
-        } else {
-          showFinalMessage();
-        }
-      }
+    // finished questions, show final message or close
+    if (quizNextBtn.textContent === "Enter the site") {
+      localStorage.setItem("rthQuizDone", "true");
+      quizOverlay.classList.add("quiz-hidden");
+    } else {
+      showFinalMessage();
+    }
+  }
     });
 
     quizSkipBtn.addEventListener("click", () => {
-      quizOverlay.classList.add("quiz-hidden");
-    });
+  localStorage.setItem("rthQuizDone", "true");
+  quizOverlay.classList.add("quiz-hidden");
+});
 
-    // Show quiz when page loads
-    document.addEventListener("DOMContentLoaded", () => {
-      renderQuestion();
-    });
+    // Show quiz when page loads, but only if not completed before
+document.addEventListener("DOMContentLoaded", () => {
+  const alreadyCompleted = localStorage.getItem("rthQuizDone") === "true";
+
+  if (!alreadyCompleted) {
+    // remove hidden class and start quiz
+    quizOverlay.classList.remove("quiz-hidden");
+    currentQuestion = 0;
+    score = 0;
+    renderQuestion();
+  }
+});
+     quizOpenLink.addEventListener("click", (event) => {
+  event.preventDefault(); // prevent jumping to top of page
+
+  // Reset quiz state and show it again
+  currentQuestion = 0;
+  score = 0;
+  hasAnswered = false;
+  quizOverlay.classList.remove("quiz-hidden");
+  renderQuestion();
+});
   </script>
 
 </body>
