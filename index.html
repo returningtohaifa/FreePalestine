@@ -421,7 +421,7 @@ const quizIntroEl = document.getElementById("quiz-intro");
       quizNextBtn.disabled = false;
     }
 
-  function showFinalMessage() {
+function showFinalMessage() {
   // Clear the intro and replace the title
   quizTitleEl.textContent = "Result";
   quizIntroEl.textContent = "";
@@ -444,6 +444,9 @@ const quizIntroEl = document.getElementById("quiz-intro");
 
   quizFeedbackEl.textContent = resultText + " " + extra;
   quizNextBtn.textContent = "Enter the site";
+
+  // 🔁 Change Skip button into Retake button
+  quizSkipBtn.textContent = "Retake quiz";
 }
     quizNextBtn.addEventListener("click", () => {
       if (!hasAnswered && currentQuestion < quizData.length) {
@@ -464,7 +467,25 @@ const quizIntroEl = document.getElementById("quiz-intro");
   }
     });
 
-    quizSkipBtn.addEventListener("click", () => {
+   quizSkipBtn.addEventListener("click", () => {
+
+  // If the button currently says "Retake quiz", restart the quiz
+  if (quizSkipBtn.textContent === "Retake quiz") {
+    currentQuestion = 0;
+    score = 0;
+    hasAnswered = false;
+
+    quizTitleEl.textContent = "Before we begin…";
+    quizIntroEl.textContent =
+      "A short three-question check. Not to judge you – but to show how much has been hidden from you about Palestine.";
+
+    quizSkipBtn.textContent = "Skip quiz";
+    quizOverlay.classList.remove("quiz-hidden");
+    renderQuestion();
+    return;
+  }
+
+  // Otherwise, normal skip behavior
   localStorage.setItem("rthQuizDone", "true");
   quizOverlay.classList.add("quiz-hidden");
 });
@@ -488,6 +509,12 @@ document.addEventListener("DOMContentLoaded", () => {
   currentQuestion = 0;
   score = 0;
   hasAnswered = false;
+  quizTitleEl.textContent = "Before we begin…";
+  quizIntroEl.textContent =
+    "A short three-question check. Not to judge you – but to show how much has been hidden from you about Palestine.";
+
+  quizSkipBtn.textContent = "Skip quiz";
+
   quizOverlay.classList.remove("quiz-hidden");
   renderQuestion();
 });
