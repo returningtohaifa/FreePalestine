@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Map of Palestine – Returning to Haifa</title>
+
+  <!-- Basic description for search/preview -->
+  <meta name="description" content="Interactive map of Palestine under occupation: places, massacres, and resistance." />
+
+  <!-- Reuse the same visual identity as index.html -->
+  <style>
+    :root{
+      --bg:#0b0b0b;
+      --panel:#0f0f10;
+      --muted:#cfcfcf;
+      --text:#f4f4f4;
+      --border:#222;
+      --accent:#e53935;
+      --max-width:900px;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height:1.6;
+    }
+
+    header {
+      padding: 2.5rem 1.5rem 1rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--panel);
+    }
+
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    h1 {
+      margin: 0 0 0.3rem 0;
+      font-size: clamp(1.6rem, 2.2vw + 1rem, 2.2rem);
+      line-height:1.05;
+      letter-spacing: -0.01em;
+    }
+
+    .tagline {
+      color: var(--muted);
+      font-size: 0.95rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-top: 0.3rem;
+    }
+
+    /* simple back nav */
+    nav a {
+      color: var(--accent);
+      font-size: 0.95rem;
+      text-decoration: none;
+      margin-right: 1rem;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    main {
+      padding: 1.5rem 0 2rem;
+    }
+
+    .intro {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    /* Map container: Leaflet will turn this div into an interactive map */
+    #map {
+      width: 100%;
+      height: 500px;                 /* you can adjust this later */
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.25rem 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      background: var(--panel);
+      margin-top: 2rem;
+    }
+
+    /* Leaflet default styles – we import their CSS and slightly adapt */
+    /* This will be overridden/extended by the official Leaflet CSS we link below */
+  </style>
+
+  <!-- Leaflet CSS (map library styles). Loaded from official CDN. -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+</head>
+
+<body>
+
+  <header>
+    <div class="container">
+      <h1>Map of Palestine</h1>
+      <div class="tagline">Land under occupation – places of massacre, siege, and resistance.</div>
+      <nav>
+        <!-- Back to home and timeline -->
+        <a href="index.html">← Home</a>
+        <a href="timeline.html">Timeline</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <p class="intro">
+        This map is a starting point. It does not try to show “both sides”.
+        It locates places in Palestine as a colonized land – cities, camps, and sites of massacres and bombardment.
+        Over time, more events and dates can be added and filtered by year or by type.
+      </p>
+
+      <!-- Leaflet will render the interactive map into this div -->
+      <div id="map"></div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      © Returning to Haifa. The map does not “balance narratives” – it records a crime scene.
+    </div>
+  </footer>
+
+  <!-- Leaflet JS (map library logic). Loaded from CDN. -->
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+
+  <script>
+    // =========
+    // Basic Leaflet map setup
+    // =========
+
+    // 1) Create the map and set its initial view.
+    //    - First argument: the id of the HTML element (#map)
+    //    - Second argument: [latitude, longitude]
+    //    - Third argument: zoom level (higher = more zoomed in)
+    //
+    // We center roughly on Palestine (~31.5, 35.0).
+    const map = L.map('map').setView([31.5, 35.0], 7);
+
+    // 2) Add a tile layer (the visual map tiles from OpenStreetMap).
+    //    This is the "base map" on which we will place markers.
+    //
+    //    - attribution is legally required: it credits OpenStreetMap contributors.
+    //    - maxZoom can be tuned; 18 is usually enough.
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // =========
+    // Example markers / events
+    //
+    // For now we add a few examples manually.
+    // Later we can move this data into an array and link it to a timeline or year filter.
+    // =========
+
+    // Helper function to create a marker with a popup.
+    // This keeps the code shorter + easier to change later.
+    function addEventMarker(lat, lng, title, htmlDescription) {
+      // Create the marker at given coordinates
+      const marker = L.marker([lat, lng]).addTo(map);
+
+      // Bind a popup with HTML content
+      marker.bindPopup(`
+        <strong>${title}</strong><br />
+        ${htmlDescription}
+      `);
+
+      return marker;
+    }
+
+    // Example 1: Gaza Strip – repeated wars and siege
+    addEventMarker(
+      31.5, 34.47,
+      "Gaza – besieged and bombarded",
+      `
+        Gaza is one of the most densely populated places on earth,
+        trapped under land, sea, and air blockade by the occupation and Egypt.
+        It has faced repeated large-scale assaults, massacres, and destruction of civilian life and infrastructure.
+      `
+    );
+
+    // Example 2: Deir Yassin – 1948 massacre during the Nakba
+    addEventMarker(
+      31.778, 35.177,
+      "Deir Yassin – 1948 massacre",
+      `
+        In April 1948, Zionist militias attacked the Palestinian village of Deir Yassin near Jerusalem,
+        killing and expelling civilians as part of the broader campaign of ethnic cleansing during the Nakba.
+      `
+    );
+
+    // Example 3: Jenin – camp and repeated assaults
+    addEventMarker(
+      32.463, 35.293,
+      "Jenin – camp and raids",
+      `
+        Jenin refugee camp in the West Bank has been the target of repeated raids, demolitions,
+        and killings by the occupation forces, especially during and after the Second Intifada and in recent years.
+      `
+    );
+
+    // Later we can:
+    //  - move event data into a JavaScript array of objects (with year, type, etc.)
+    //  - connect it to a year slider or buttons
+    //  - show/hide markers depending on selected period (e.g. "1948", "1967", "Gaza wars")
+  </script>
+
+</body>
+</html>
