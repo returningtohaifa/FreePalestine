@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Map of Palestine – Returning to Haifa</title>
 
-  <!-- Basic description for search/preview -->
-  <meta name="description" content="Interactive map of Palestine under occupation: places, massacres, and resistance." />
+  <!-- Short description used by search engines and previews -->
+  <meta name="description" content="Interactive map of historical Palestine under Zionist occupation: cities, camps, massacres, and resistance." />
 
-  <!-- Reuse the same visual identity as index.html -->
+  <!-- Reuse same basic styling language as index.html -->
   <style>
     :root{
       --bg:#0b0b0b;
@@ -76,10 +76,10 @@
       margin-bottom: 1rem;
     }
 
-    /* Map container: Leaflet will turn this div into an interactive map */
+    /* Map container: Leaflet transforms this div into an interactive map */
     #map {
       width: 100%;
-      height: 500px;                 /* you can adjust this later */
+      height: 500px;                 /* adjust later if you want more/less height */
       border-radius: 10px;
       border: 1px solid var(--border);
       overflow: hidden;
@@ -94,11 +94,13 @@
       margin-top: 2rem;
     }
 
-    /* Leaflet default styles – we import their CSS and slightly adapt */
-    /* This will be overridden/extended by the official Leaflet CSS we link below */
+    /* Optional: slightly mute the base map (so our overlays stand out more) */
+    .leaflet-container {
+      filter: saturate(0.7); /* reduce color intensity a bit */
+    }
   </style>
 
-  <!-- Leaflet CSS (map library styles). Loaded from official CDN. -->
+  <!-- Leaflet CSS (map UI styles) from official CDN -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -112,9 +114,9 @@
   <header>
     <div class="container">
       <h1>Map of Palestine</h1>
-      <div class="tagline">Land under occupation – places of massacre, siege, and resistance.</div>
+      <div class="tagline">Historical Palestine as a land – not as the occupier names it.</div>
       <nav>
-        <!-- Back to home and timeline -->
+        <!-- Back to your main pages -->
         <a href="index.html">← Home</a>
         <a href="timeline.html">Timeline</a>
       </nav>
@@ -124,23 +126,24 @@
   <main>
     <div class="container">
       <p class="intro">
-        This map is a starting point. It does not try to show “both sides”.
-        It locates places in Palestine as a colonized land – cities, camps, and sites of massacres and bombardment.
-        Over time, more events and dates can be added and filtered by year or by type.
+        This map is not neutral. The base layer is just geography (roads, hills, sea).
+        The names, borders, and descriptions we put on top follow Palestine as a colonized land:
+        al-Quds, Haifa, Gaza, Yafa, and the villages and camps targeted by war, siege, and massacres.
+        Later, this can grow into a time-based map of specific years, wars on Gaza, and the Nakba.
       </p>
 
-      <!-- Leaflet will render the interactive map into this div -->
+      <!-- Leaflet will render the map into this element -->
       <div id="map"></div>
     </div>
   </main>
 
   <footer>
     <div class="container">
-      © Returning to Haifa. The map does not “balance narratives” – it records a crime scene.
+      © Returning to Haifa. The background map is just terrain; the story belongs to Palestine.
     </div>
   </footer>
 
-  <!-- Leaflet JS (map library logic). Loaded from CDN. -->
+  <!-- Leaflet JS (map logic) -->
   <script
     src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
@@ -149,84 +152,145 @@
 
   <script>
     // =========
-    // Basic Leaflet map setup
+    // BASIC MAP SETUP – LOCKED TO HISTORICAL PALESTINE
     // =========
 
-    // 1) Create the map and set its initial view.
-    //    - First argument: the id of the HTML element (#map)
-    //    - Second argument: [latitude, longitude]
-    //    - Third argument: zoom level (higher = more zoomed in)
+    // We define an approximate bounding box for historical Palestine.
+    // These numbers are lat/lng pairs:
+    //   [south latitude, west longitude], [north latitude, east longitude]
     //
-    // We center roughly on Palestine (~31.5, 35.0).
-    const map = L.map('map').setView([31.5, 35.0], 7);
+    // It's not a legal border definition – it's a visual frame:
+    // coast from Rafah up to north, then inland roughly along the Jordan valley.
+    const PALESTINE_BOUNDS = L.latLngBounds(
+      [29.5, 34.2],  // south-west (near Sinai / Naqab edge)
+      [33.6, 36.1]   // north-east (upper Galilee / Jordan valley area)
+    );
 
-    // 2) Add a tile layer (the visual map tiles from OpenStreetMap).
-    //    This is the "base map" on which we will place markers.
-    //
-    //    - attribution is legally required: it credits OpenStreetMap contributors.
-    //    - maxZoom can be tuned; 18 is usually enough.
+    // Create the map, lock it to PALESTINE_BOUNDS, and fit the view inside it.
+    const map = L.map('map', {
+      minZoom: 6,               // don't zoom out too far (prevents "whole world" view)
+      maxZoom: 14,              // you can increase if you want closer zoom
+      maxBounds: PALESTINE_BOUNDS,    // prevent panning far away
+      maxBoundsViscosity: 1.0   // strong "rubber band" effect at edges
+    }).fitBounds(PALESTINE_BOUNDS);
+
+    // Base tiles: we still need a tile source for land/roads/sea.
+    // For now we use OpenStreetMap because it's free and open.
+    // We treat it as a neutral *background*, not as a political authority.
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 18,
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
     // =========
-    // Example markers / events
+    // PALESTINE OUTLINE (SYMBOLIC)
+    // =========
     //
-    // For now we add a few examples manually.
-    // Later we can move this data into an array and link it to a timeline or year filter.
+    // We draw a simple polygon outline on top to visually mark historical Palestine.
+    // This is an approximate shape – a visual reminder that the land is one whole.
+    const palestineOutlineCoords = [
+      [33.1, 35.1],  // north-west coast
+      [33.4, 35.8],  // north-east highlands
+      [32.7, 35.8],
+      [31.9, 35.6],
+      [31.3, 35.4],
+      [30.8, 35.1],
+      [29.8, 34.9],
+      [31.2, 34.25]  // near Gaza / Rafah
+    ];
+
+    L.polygon(palestineOutlineCoords, {
+      color: '#e53935',      // red outline
+      weight: 2,
+      fillColor: '#e53935',
+      fillOpacity: 0.04      // very soft fill, so base map is still visible
+    }).addTo(map);
+
+    // =========
+    // EVENT / CITY MARKERS WITH OUR NAMES & TEXT
     // =========
 
-    // Helper function to create a marker with a popup.
-    // This keeps the code shorter + easier to change later.
+    // Helper: create a marker with title + HTML description.
     function addEventMarker(lat, lng, title, htmlDescription) {
-      // Create the marker at given coordinates
       const marker = L.marker([lat, lng]).addTo(map);
-
-      // Bind a popup with HTML content
       marker.bindPopup(`
         <strong>${title}</strong><br />
         ${htmlDescription}
       `);
-
       return marker;
     }
 
-    // Example 1: Gaza Strip – repeated wars and siege
+    // We can later move this into a "data array" like we did for the quiz,
+    // and filter by year / event type. For now we hardcode a few key locations.
+
+    // al-Quds / Jerusalem
     addEventMarker(
-      31.5, 34.47,
-      "Gaza – besieged and bombarded",
+      31.778, 35.23,
+      "al-Quds (Jerusalem)",
       `
-        Gaza is one of the most densely populated places on earth,
-        trapped under land, sea, and air blockade by the occupation and Egypt.
-        It has faced repeated large-scale assaults, massacres, and destruction of civilian life and infrastructure.
+        The heart of Palestine, targeted by ongoing Judaization, settlement expansion,
+        and attempts to erase its Arab and Islamic identity. Palestinians here face home
+        demolitions, residency revocations, and daily harassment.
       `
     );
 
-    // Example 2: Deir Yassin – 1948 massacre during the Nakba
+    // Gaza Strip
+    addEventMarker(
+      31.5, 34.47,
+      "Gaza – besieged strip",
+      `
+        One of the most densely populated areas on earth, trapped under land, sea, and air blockade.
+        Subjected to repeated large-scale bombardments and massacres, while its people continue to resist,
+        organize, and insist on return.
+      `
+    );
+
+    // Haifa
+    addEventMarker(
+      32.82, 34.99,
+      "Haifa – a coastal Palestinian city",
+      `
+        A major Palestinian port city on the Mediterranean. Large parts of its indigenous population
+        were expelled during the Nakba, yet Palestinians who remained continue to live under discrimination
+        inside the 1948 occupied areas.
+      `
+    );
+
+    // Yafa / Jaffa
+    addEventMarker(
+      32.05, 34.75,
+      "Yafa (Jaffa)",
+      `
+        Once called the "Bride of the Sea", Yafa was a vibrant Palestinian coastal city.
+        Its population was largely expelled in 1948; the city was later absorbed into the occupation’s coastal metropolis.
+      `
+    );
+
+    // Deir Yassin (Nakba massacre site)
     addEventMarker(
       31.778, 35.177,
       "Deir Yassin – 1948 massacre",
       `
-        In April 1948, Zionist militias attacked the Palestinian village of Deir Yassin near Jerusalem,
-        killing and expelling civilians as part of the broader campaign of ethnic cleansing during the Nakba.
+        In April 1948, Zionist militias attacked the Palestinian village of Deir Yassin near al-Quds,
+        killing and expelling civilians as part of the wider ethnic cleansing campaign of the Nakba.
       `
     );
 
-    // Example 3: Jenin – camp and repeated assaults
+    // Jenin camp
     addEventMarker(
       32.463, 35.293,
-      "Jenin – camp and raids",
+      "Jenin camp",
       `
-        Jenin refugee camp in the West Bank has been the target of repeated raids, demolitions,
-        and killings by the occupation forces, especially during and after the Second Intifada and in recent years.
+        Jenin refugee camp in the West Bank has faced repeated raids, demolitions,
+        and killings by occupation forces, especially during the Second Intifada and recent assaults.
       `
     );
 
-    // Later we can:
-    //  - move event data into a JavaScript array of objects (with year, type, etc.)
-    //  - connect it to a year slider or buttons
-    //  - show/hide markers depending on selected period (e.g. "1948", "1967", "Gaza wars")
+    // Later:
+    //  - move these markers into a structured array:
+    //      { lat, lng, title, text, year, type: "massacre" | "city" | "camp" | ... }
+    //  - add UI controls (buttons or a slider) to show/hide markers based on year/type.
+    //  - maybe connect this with your timeline page so clicking a period there could highlight events here.
   </script>
 
 </body>
