@@ -6,7 +6,7 @@
   <title>Map of Palestine – Returning to Haifa</title>
 
   <!-- Description for search/preview -->
-  <meta name="description" content="Interactive map focused on Palestine: cities, camps, massacres, and siege sites under occupation." />
+  <meta name="description" content="Historical map of Palestine with markers for cities, camps, massacres, and siege sites under Zionist occupation." />
 
   <style>
     :root{
@@ -90,6 +90,11 @@
       background: var(--panel);
       margin-top: 2rem;
     }
+
+    /* Leaflet container background in case image fails */
+    .leaflet-container {
+      background: #050505;
+    }
   </style>
 
   <!-- Leaflet CSS -->
@@ -105,7 +110,7 @@
 <header>
   <div class="container">
     <h1>Map of Palestine</h1>
-    <div class="tagline">Only Palestine. Our places, our names.</div>
+    <div class="tagline">Historic Palestine. Our land, our places.</div>
     <nav>
       <a href="index.html">← Home</a>
       <a href="timeline.html">Timeline</a>
@@ -116,8 +121,10 @@
 <main>
   <div class="container">
     <p class="intro">
-      This map focuses on Palestine: cities, refugee camps, massacres, and siege sites.
-      Markers can later be linked to years, testimonies, and wars on Gaza and the rest of the land.
+      Background: a 19th-century survey map of Palestine, before the full-scale ethnic
+      cleansing and partition. On top: Palestinian cities, camps, and massacre sites.
+      Later, each point can link to testimonies, archives, and wars on Gaza and the rest
+      of the land.
     </p>
 
     <div id="map"></div>
@@ -126,7 +133,7 @@
 
 <footer>
   <div class="container">
-    © Returning to Haifa.
+    © Returning to Haifa. Maps are not neutral; this one refuses erasure.
   </div>
 </footer>
 
@@ -137,102 +144,34 @@
 ></script>
 
 <script>
-  // 1. Create the map and set initial view roughly over Palestine
-  const map = L.map('map').setView([31.5, 35.0], 8);
+  // =========
+  // 1. DEFINE THE BOUNDS OF HISTORICAL PALESTINE FOR THIS VIEW
+  // =========
 
-  // 2. Add a visible base map (OpenStreetMap tiles)
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 18,
-    attribution: '&copy; OpenStreetMap contributors'
+  const PALESTINE_BOUNDS = L.latLngBounds(
+    [29.5, 34.2],  // south-west approx
+    [33.6, 36.1]   // north-east approx
+  );
+
+  const map = L.map('map', {
+    minZoom: 6,
+    maxZoom: 11,
+    maxBounds: PALESTINE_BOUNDS,
+    maxBoundsViscosity: 1.0
+  }).fitBounds(PALESTINE_BOUNDS);
+
+  // =========
+  // 2. HISTORICAL RASTER MAP OVERLAY
+  // =========
+  //
+  // PEF Survey of Western Palestine composite (1870s),
+  // via Wikimedia Commons (public domain).
+  // Using a downscaled version so it loads in browsers.
+  const historicalMapUrl =
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/PEF_Survey_of_Western_Palestine_composite.jpg/1195px-PEF_Survey_of_Western_Palestine_composite.jpg';
+
+  L.imageOverlay(historicalMapUrl, PALESTINE_BOUNDS, {
+    opacity: 0.95
   }).addTo(map);
 
-  // 3. Helper to add markers with popups
-  function addEventMarker(lat, lng, title, htmlDescription) {
-    const marker = L.circleMarker([lat, lng], {
-      radius: 6,
-      color: '#e53935',
-      weight: 2,
-      fillColor: '#e53935',
-      fillOpacity: 0.9
-    }).addTo(map);
-
-    marker.bindPopup(`
-      <strong>${title}</strong><br />
-      ${htmlDescription}
-    `);
-  }
-
-  // 4. Key locations (you can expand this list later)
-
-  // al-Quds / Jerusalem
-  addEventMarker(
-    31.778, 35.23,
-    "al-Quds (Jerusalem)",
-    `
-      Central city of Palestine. Target of Judaization, settlement expansion,
-      and attempts to erase its Arab and Islamic identity. Palestinians face
-      home demolitions, residency revocations, and continuous repression.
-    `
-  );
-
-  // Gaza
-  addEventMarker(
-    31.5, 34.47,
-    "Gaza – besieged strip",
-    `
-      One of the most densely populated places on earth, trapped under land,
-      sea, and air blockade. Repeated large-scale bombardments and massacres
-      try to crush its people, who insist on resistance and return.
-    `
-  );
-
-  // Haifa
-  addEventMarker(
-    32.82, 34.99,
-    "Haifa",
-    `
-      Palestinian coastal city on the Mediterranean. Its indigenous population
-      was largely expelled during the Nakba. Those who remain live under
-      discrimination in the 1948-occupied areas but keep the city's identity alive.
-    `
-  );
-
-  // Yafa / Jaffa
-  addEventMarker(
-    32.05, 34.75,
-    "Yafa (Jaffa)",
-    `
-      Once a vibrant Palestinian port city, called the "Bride of the Sea".
-      Its people were largely expelled in 1948, and its neighborhoods were
-      folded into the occupier’s coastal metropolis.
-    `
-  );
-
-  // Deir Yassin
-  addEventMarker(
-    31.778, 35.177,
-    "Deir Yassin – 1948 massacre",
-    `
-      In April 1948, Zionist militias attacked this Palestinian village near al-Quds,
-      killing, terrorizing, and expelling civilians as part of the broader ethnic
-      cleansing of the Nakba.
-    `
-  );
-
-  // Jenin camp
-  addEventMarker(
-    32.463, 35.293,
-    "Jenin refugee camp",
-    `
-      Refugee camp repeatedly attacked with raids, demolitions, and killings by
-      occupation forces, especially during the Second Intifada and recent assaults.
-      A symbol of stubborn resistance.
-    `
-  );
-
-  // You can keep adding points the same way:
-  // addEventMarker(lat, lng, "Title", "HTML description...");
-</script>
-
-</body>
-</html>
+  // =========
