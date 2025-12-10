@@ -157,15 +157,18 @@
       opacity: 0.9;
     }
 
-    /* Zoom buttons – fixed on screen, but constrained + hidden when map not visible */
+    /* Zoom buttons – fixed, but JS moves them inside the map rect */
     .map-controls {
       position: fixed;
-      bottom: 16px;
-      right: 16px; /* will be corrected by JS to align to map’s right edge */
-      display: none; /* initially hidden until JS decides */
+      top: 16px;
+      left: 16px;
+      display: flex;
       flex-direction: column;
       gap: 4px;
       z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.12s ease-out;
     }
 
     .map-controls button {
@@ -229,8 +232,6 @@
           alt="PEF Survey of Western Palestine, 19th-century map of Palestine under Ottoman rule"
           class="map-image"
         />
-
-        <!-- Markers (positions you can refine with the helper) -->
 
         <!-- al-Quds / Jerusalem -->
         <button
@@ -316,7 +317,7 @@
       </div>
     </section>
 
-    <!-- Zoom controls (fixed, constrained to map & hidden off-map) -->
+    <!-- Zoom controls (fixed, but clamped to map rect) -->
     <div class="map-controls" id="map-controls">
       <button type="button" id="zoom-in" title="Zoom in">+</button>
       <button type="button" id="zoom-out" title="Zoom out">−</button>
@@ -476,25 +477,49 @@
         isDragging = false;
       });
 
-      // === Keep zoom buttons visible only when map intersects viewport ===
+      // Position zoom buttons so they are:
+      //  - only visible when any part of the map is on screen
+      //  - clamped inside the map rect (top/bottom/left/right)
       function updateControlsPosition() {
         const rect = wrapper.getBoundingClientRect();
-        const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+        const vh = window.innerHeight || document.documentElement.clientHeight;
+        const vw = window.innerWidth || document.documentElement.clientWidth;
 
-        const intersects = rect.bottom > 0 && rect.top < viewportHeight;
+        const mapVisible = rect.bottom > 0 && rect.top < vh && rect.right > 0 && rect.left < vw;
 
-        if (!intersects) {
-          zoomControls.style.display = 'none';
+        if (!mapVisible) {
+          zoomControls.style.opacity = '0';
+          zoomControls.style.pointerEvents = 'none';
           return;
         }
 
-        // show and align horizontally with the map’s right edge
-        zoomControls.style.display = 'flex';
+        zoomControls.style.opacity = '1';
+        zoomControls.style.pointerEvents = 'auto';
 
-        const rawRightOffset = window.innerWidth - rect.right + 16;
-        const rightOffset = Math.max(16, rawRightOffset); // never go past viewport edge
-        zoomControls.style.right = rightOffset + 'px';
-        zoomControls.style.bottom = '16px';
+        const controlsWidth = zoomControls.offsetWidth || 40;
+        const controlsHeight = zoomControls.offsetHeight || 80;
+        const padding = 16;
+
+        // vertical: clamp between map top+padding and map bottom-controlsHeight-padding
+        let top = rect.bottom - controlsHeight - padding;
+        const minTop = rect.top + padding;
+        const maxTop = rect.bottom - controlsHeight - padding;
+        top = Math.min(Math.max(top, minTop), maxTop);
+
+        // also keep inside viewport vertically
+        top = Math.min(Math.max(top, padding), vh - controlsHeight - padding);
+
+        // horizontal: clamp between map left+padding and map right-controlsWidth-padding
+        let left = rect.right - controlsWidth - padding;
+        const minLeft = rect.left + padding;
+        const maxLeft = rect.right - controlsWidth - padding;
+        left = Math.min(Math.max(left, minLeft), maxLeft);
+
+        // also keep inside viewport horizontally
+        left = Math.min(Math.max(left, padding), vw - controlsWidth - padding);
+
+        zoomControls.style.top = top + 'px';
+        zoomControls.style.left = left + 'px';
       }
 
       window.addEventListener('scroll', updateControlsPosition);
@@ -508,7 +533,6 @@
         updateControlsPosition();
       });
 
-      // In case DOMContentLoaded fires after load for some reason
       updateControlsPosition();
     });
   </script>
