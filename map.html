@@ -157,10 +157,9 @@
       opacity: 0.9;
     }
 
-    /* Zoom buttons – live inside the map, but JS can switch them between
-       absolute (inside map) and fixed (floating over map while in view). */
+    /* Zoom buttons – anchored inside the map, bottom-right */
     .map-controls {
-      position: absolute;  /* default, anchored to bottom-right of map */
+      position: absolute;
       bottom: 16px;
       right: 16px;
       display: flex;
@@ -340,7 +339,6 @@
       const markers        = document.querySelectorAll('.map-marker');
       const wrapper        = document.getElementById('map-wrapper');
       const zoomLayer      = document.getElementById('map-zoom-layer');
-      const zoomControls   = document.getElementById('map-controls');
       const zoomInBtn      = document.getElementById('zoom-in');
       const zoomOutBtn     = document.getElementById('zoom-out');
       const coordsHintEl   = document.getElementById('coords-hint');
@@ -476,39 +474,12 @@
         isDragging = false;
       });
 
-      // === Keep zoom buttons "floating" only while over the map ===
-      function updateControlsPosition() {
-        const rect = wrapper.getBoundingClientRect();
-        const controlsHeight = zoomControls.offsetHeight;
-        const offset = 16;
-
-        // If the map is tall enough and we're within its vertical range:
-        const inVerticalRange =
-          rect.top <= window.innerHeight - offset - controlsHeight &&
-          rect.bottom >= offset + controlsHeight;
-
-        if (inVerticalRange) {
-          // Float: fixed to viewport, aligned to map's right edge
-          zoomControls.style.position = 'fixed';
-          zoomControls.style.bottom = offset + 'px';
-          const rightOffset = window.innerWidth - rect.right + 16;
-          zoomControls.style.right = rightOffset + 'px';
-        } else {
-          // Stick back to the map box (bottom-right)
-          zoomControls.style.position = 'absolute';
-          zoomControls.style.bottom = '16px';
-          zoomControls.style.right = '16px';
-        }
-      }
-
-      window.addEventListener('scroll', updateControlsPosition);
-      window.addEventListener('resize', updateControlsPosition);
+      // Initial center after layout
       window.addEventListener('load', () => {
         scale = 1;
         measureBaseSize();
         centerMap();
         updateTransform();
-        updateControlsPosition();
       });
     });
   </script>
