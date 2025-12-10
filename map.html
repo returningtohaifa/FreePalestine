@@ -91,7 +91,7 @@
       margin-top: 2rem;
     }
 
-    /* Leaflet container background in case image fails */
+    /* fallback background if image fails */
     .leaflet-container {
       background: #050505;
     }
@@ -121,57 +121,4 @@
 <main>
   <div class="container">
     <p class="intro">
-      Background: a 19th-century survey map of Palestine, before the full-scale ethnic
-      cleansing and partition. On top: Palestinian cities, camps, and massacre sites.
-      Later, each point can link to testimonies, archives, and wars on Gaza and the rest
-      of the land.
-    </p>
-
-    <div id="map"></div>
-  </div>
-</main>
-
-<footer>
-  <div class="container">
-    © Returning to Haifa. Maps are not neutral; this one refuses erasure.
-  </div>
-</footer>
-
-<!-- Leaflet JS -->
-<script
-  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-  crossorigin=""
-></script>
-
-<script>
-  // =========
-  // 1. DEFINE THE BOUNDS OF HISTORICAL PALESTINE FOR THIS VIEW
-  // =========
-
-  const PALESTINE_BOUNDS = L.latLngBounds(
-    [29.5, 34.2],  // south-west approx
-    [33.6, 36.1]   // north-east approx
-  );
-
-  const map = L.map('map', {
-    minZoom: 6,
-    maxZoom: 11,
-    maxBounds: PALESTINE_BOUNDS,
-    maxBoundsViscosity: 1.0
-  }).fitBounds(PALESTINE_BOUNDS);
-
-  // =========
-  // 2. HISTORICAL RASTER MAP OVERLAY
-  // =========
-  //
-  // PEF Survey of Western Palestine composite (1870s),
-  // via Wikimedia Commons (public domain).
-  // Using a downscaled version so it loads in browsers.
-  const historicalMapUrl =
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/PEF_Survey_of_Western_Palestine_composite.jpg/1195px-PEF_Survey_of_Western_Palestine_composite.jpg';
-
-  L.imageOverlay(historicalMapUrl, PALESTINE_BOUNDS, {
-    opacity: 0.95
-  }).addTo(map);
-
-  // =========
+      Background: an Ottoman map of Palestine (1918–21), publ
