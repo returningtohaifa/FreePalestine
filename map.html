@@ -157,11 +157,11 @@
       opacity: 0.9;
     }
 
-    /* Zoom buttons – fixed to viewport bottom-right, always visible */
+    /* Zoom buttons – fixed, but aligned with the map’s right edge */
     .map-controls {
       position: fixed;
-      right: 16px;
       bottom: 16px;
+      right: calc((100vw - var(--max-width)) / 2 + 16px);
       display: flex;
       flex-direction: column;
       gap: 4px;
@@ -316,7 +316,7 @@
       </div>
     </section>
 
-    <!-- Zoom controls (fixed on screen, always visible) -->
+    <!-- Zoom controls (fixed on screen, aligned with map) -->
     <div class="map-controls">
       <button type="button" id="zoom-in" title="Zoom in">+</button>
       <button type="button" id="zoom-out" title="Zoom out">−</button>
