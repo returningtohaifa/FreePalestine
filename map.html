@@ -54,43 +54,14 @@
       margin-top: 0.3rem;
     }
 
-    nav {
-      margin-top: 0.75rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      align-items: center;
-      font-size: 0.95rem;
-    }
-
     nav a {
       color: var(--accent);
+      font-size: 0.95rem;
       text-decoration: none;
-      margin-right: 0.75rem;
+      margin-right: 1rem;
     }
     nav a:hover {
       text-decoration: underline;
-    }
-
-    /* Zoom buttons in header */
-    .zoom-label {
-      color: var(--muted);
-      margin-right: 0.3rem;
-    }
-
-    nav button {
-      background: #e53935;
-      color: #000;
-      border: 1px solid #fff;
-      border-radius: 4px;
-      padding: 0.1rem 0.5rem;
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    nav button:hover {
-      filter: brightness(1.1);
     }
 
     main {
@@ -186,6 +157,35 @@
       opacity: 0.9;
     }
 
+    /* Zoom buttons – fixed to viewport bottom-right, always visible */
+    .map-controls {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 9999;
+    }
+
+    .map-controls button {
+      background: #e53935;
+      color: #000;
+      border: 1px solid #fff;
+      border-radius: 4px;
+      width: 40px;
+      height: 40px;
+      font-size: 22px;
+      font-weight: bold;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: 0 0 6px rgba(0,0,0,0.8);
+    }
+
+    .map-controls button:hover {
+      filter: brightness(1.1);
+    }
+
     footer {
       border-top: 1px solid var(--border);
       padding: 1.25rem 0;
@@ -205,9 +205,6 @@
       <div class="tagline">Late Ottoman Palestine. Our land, our places.</div>
       <nav>
         <a href="index.html">← Home</a>
-        <span class="zoom-label">Zoom:</span>
-        <button type="button" id="zoom-in">+</button>
-        <button type="button" id="zoom-out">−</button>
       </nav>
     </div>
   </header>
@@ -318,6 +315,13 @@
         Helper: click anywhere on the map background to see suggested <code>top</code>/<code>left</code> percentages for placing or correcting a marker.
       </div>
     </section>
+
+    <!-- Zoom controls (fixed on screen, always visible) -->
+    <div class="map-controls">
+      <button type="button" id="zoom-in" title="Zoom in">+</button>
+      <button type="button" id="zoom-out" title="Zoom out">−</button>
+    </div>
+
   </main>
 
   <footer>
