@@ -151,6 +151,25 @@
       background: var(--panel);
       margin-top: 2rem;
     }
+    .map-zoom-layer {
+  position: relative;
+  width: 100%;
+  height: auto;
+  transform-origin: 0 0;
+  cursor: grab;
+}
+
+.map-zoom-layer:active {
+  cursor: grabbing;
+}
+
+.map-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  user-select: none;
+  pointer-events: none;
+}
   </style>
 </head>
 
@@ -180,6 +199,7 @@
 
     <!-- Map image + markers -->
     <div class="map-wrapper" id="map-wrapper">
+      <div class="map-zoom-layer" id="map-zoom-layer">
       <img
         src="palestine-map-1870s.jpg"
         alt="PEF Survey of Western Palestine, 19th-century map of Palestine under Ottoman rule"
@@ -269,6 +289,7 @@
       </p>
       <div class="coords-hint" id="coords-hint">
         Helper: click anywhere on the map background to see suggested <code>top</code>/<code>left</code> percentages for placing or correcting a marker.
+         </div>
       </div>
     </section>
   </main>
@@ -330,6 +351,54 @@
       console.log(text);
     });
   </script>
+ <script>
+  const zoomLayer = document.getElementById('map-zoom-layer');
+
+  let scale = 1;
+  let originX = 0;
+  let originY = 0;
+  let isDragging = false;
+  let startX = 0;
+  let startY = 0;
+
+  function updateTransform() {
+    zoomLayer.style.transform =
+      `translate(${originX}px, ${originY}px) scale(${scale})`;
+  }
+
+  // Mouse wheel zoom
+  zoomLayer.addEventListener('wheel', (e) => {
+    e.preventDefault();
+
+    const zoomIntensity = 0.1;
+    const delta = e.deltaY < 0 ? 1 : -1;
+
+    scale += delta * zoomIntensity;
+    scale = Math.min(Math.max(1, scale), 4); // clamp zoom (1x to 4x)
+
+    updateTransform();
+  });
+
+  // Drag start
+  zoomLayer.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    startX = e.clientX - originX;
+    startY = e.clientY - originY;
+  });
+
+  // Drag move
+  window.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    originX = e.clientX - startX;
+    originY = e.clientY - startY;
+    updateTransform();
+  });
+
+  // Drag end
+  window.addEventListener('mouseup', () => {
+    isDragging = false;
+  });
+</script>
 
 </body>
 </html>
