@@ -150,31 +150,31 @@
       font-size: 0.95rem;
     }
 
-    /* Zoom buttons */
+    /* Zoom buttons – fixed to viewport bottom-right */
     .map-controls {
-      position: absolute;
-      right: 10px;
-      top: 10px;
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
       display: flex;
       flex-direction: column;
       gap: 4px;
-      z-index: 20;
+      z-index: 999;
     }
 
     .map-controls button {
-      background: rgba(15,15,16,0.9);
+      background: rgba(15,15,16,0.95);
       color: var(--text);
       border: 1px solid var(--border);
       border-radius: 4px;
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       font-size: 18px;
       line-height: 1;
       cursor: pointer;
     }
 
     .map-controls button:hover {
-      background: rgba(40,40,42,0.95);
+      background: rgba(40,40,42,0.98);
     }
 
     footer {
@@ -214,12 +214,6 @@
 
     <!-- Map image + markers -->
     <div class="map-wrapper" id="map-wrapper">
-      <!-- Zoom buttons -->
-      <div class="map-controls">
-        <button type="button" id="zoom-in">+</button>
-        <button type="button" id="zoom-out">−</button>
-      </div>
-
       <div class="map-zoom-layer" id="map-zoom-layer">
         <img
           src="palestine-map-1870s.jpg"
@@ -227,7 +221,7 @@
           class="map-image"
         />
 
-        <!-- Markers (positions you can fine-tune later) -->
+        <!-- Markers -->
 
         <!-- al-Quds / Jerusalem -->
         <button
@@ -309,6 +303,13 @@
         expulsions, refugee camps, and acts of resistance tied to the same land.
       </p>
     </section>
+
+    <!-- Zoom controls (fixed on screen) -->
+    <div class="map-controls">
+      <button type="button" id="zoom-in">+</button>
+      <button type="button" id="zoom-out">−</button>
+    </div>
+
   </main>
 
   <footer>
@@ -354,7 +355,7 @@
         });
       });
 
-      // === Zoom + pan (with simple bounds) ===
+      // === Zoom + pan (buttons only, with bounds) ===
       let scale = 1;
       let originX = 0;
       let originY = 0;
@@ -379,7 +380,6 @@
         const scaledWidth = baseWidth * scale;
         const scaledHeight = baseHeight * scale;
 
-        // keep the image from leaving the wrapper completely
         const minX = Math.min(0, wrapperWidth - scaledWidth);
         const maxX = 0;
         const minY = Math.min(0, wrapperHeight - scaledHeight);
@@ -406,9 +406,6 @@
           `translate(${originX}px, ${originY}px) scale(${scale})`;
       }
 
-
-
-      // Zoom buttons
       function changeZoom(direction) {
         const step = 0.2;
         if (direction === 'in') {
@@ -447,7 +444,7 @@
         isDragging = false;
       });
 
-      // Initial center after everything laid out
+      // Initial center after layout
       window.addEventListener('load', () => {
         scale = 1;
         measureBaseSize();
