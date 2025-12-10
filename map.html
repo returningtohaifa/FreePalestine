@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Map of Palestine – Returning to Haifa</title>
 
-  <!-- Description for search/preview -->
-  <meta name="description" content="Historical map of Palestine with markers for cities, camps, massacres, and siege sites under Zionist occupation." />
+  <!-- Description for search / previews -->
+  <meta name="description" content="Historical map of Palestine with clickable markers for cities, camps, and massacre sites under occupation." />
 
   <style>
     :root{
@@ -71,15 +71,69 @@
     .intro {
       font-size: 0.95rem;
       color: var(--muted);
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
     }
 
-    #map {
-      width: 100%;
-      height: 520px;
+    /* Map layout */
+
+    .map-wrapper {
+      max-width: var(--max-width);
+      margin: 0 auto;
       border-radius: 10px;
       border: 1px solid var(--border);
       overflow: hidden;
+      background: #050505;
+      position: relative; /* markers use this as reference */
+    }
+
+    .map-image {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .map-marker {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid #000;
+      background: var(--accent);
+      cursor: pointer;
+      box-shadow: 0 0 0 1px #fff, 0 0 6px rgba(0,0,0,0.8);
+    }
+
+    .map-marker:hover {
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    .map-marker.active {
+      box-shadow: 0 0 0 2px #fff, 0 0 14px rgba(229,57,53,0.9);
+    }
+
+    .map-info {
+      max-width: var(--max-width);
+      margin: 1rem auto 0;
+      padding: 1rem 1.25rem 1.25rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+    }
+
+    .map-info-title {
+      margin: 0 0 0.4rem 0;
+      font-size: 1.1rem;
+    }
+
+    .map-info-subtitle {
+      margin: 0 0 0.6rem 0;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .map-info-body {
+      font-size: 0.95rem;
     }
 
     footer {
@@ -90,35 +144,169 @@
       background: var(--panel);
       margin-top: 2rem;
     }
-
-    /* fallback background if image fails */
-    .leaflet-container {
-      background: #050505;
-    }
   </style>
-
-  <!-- Leaflet CSS -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    crossorigin=""
-  />
 </head>
 
 <body>
 
-<header>
-  <div class="container">
-    <h1>Map of Palestine</h1>
-    <div class="tagline">Historic Palestine. Our land, our places.</div>
-    <nav>
-      <a href="index.html">← Home</a>
-      <a href="timeline.html">Timeline</a>
-    </nav>
-  </div>
-</header>
+  <header>
+    <div class="container">
+      <h1>Map of Palestine</h1>
+      <div class="tagline">Historic Palestine. Our land, our places.</div>
+      <nav>
+        <a href="index.html">← Home</a>
+        <a href="timeline.html">Timeline</a>
+      </nav>
+    </div>
+  </header>
 
-<main>
-  <div class="container">
-    <p class="intro">
-      Background: an Ottoman map of Palestine (1918–21), publ
+  <main>
+    <div class="container">
+      <p class="intro">
+        Background: a 19th-century survey map of Palestine (PEF Survey of Western Palestine).
+        On top: Palestinian cities, refugee camps, and sites of massacre and siege.
+        Each marker can later be linked to testimonies, archives, and wars on Gaza
+        and the rest of the land.
+      </p>
+    </div>
+
+    <!-- Map image + markers -->
+    <div class="map-wrapper">
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/PEF_Survey_of_Western_Palestine_composite.jpg/1195px-PEF_Survey_of_Western_Palestine_composite.jpg"
+        alt="PEF Survey of Western Palestine, 19th-century map of Palestine"
+        class="map-image"
+      />
+
+      <!-- Positions are rough; can be tweaked later by eye -->
+
+      <!-- al-Quds / Jerusalem -->
+      <button
+        type="button"
+        class="map-marker"
+        style="top: 58%; left: 58%;"
+        data-title="al-Quds (Jerusalem)"
+        data-subtitle="Central city of Palestine"
+        data-body="Central city of Palestine. Target of Judaization, settlement expansion,
+        and attempts to erase its Arab and Islamic identity. Palestinians face home demolitions,
+        residency revocations, and continuous repression."
+        aria-label="al-Quds (Jerusalem)"
+      ></button>
+
+      <!-- Gaza -->
+      <button
+        type="button"
+        class="map-marker"
+        style="top: 75%; left: 33%;"
+        data-title="Gaza – besieged strip"
+        data-subtitle="Blockaded coastal enclave"
+        data-body="One of the most densely populated places on earth, trapped under land,
+        sea, and air blockade. Repeated large-scale bombardments and massacres try to crush
+        its people, who insist on resistance and return."
+        aria-label="Gaza – besieged strip"
+      ></button>
+
+      <!-- Haifa -->
+      <button
+        type="button"
+        class="map-marker"
+        style="top: 32%; left: 41%;"
+        data-title="Haifa"
+        data-subtitle="Palestinian coastal city"
+        data-body="Palestinian coastal city on the Mediterranean. Its indigenous population
+        was largely expelled during the Nakba. Those who remain live under discrimination in
+        the 1948-occupied areas but keep the city's identity alive."
+        aria-label="Haifa"
+      ></button>
+
+      <!-- Yafa / Jaffa -->
+      <button
+        type="button"
+        class="map-marker"
+        style="top: 50%; left: 38%;"
+        data-title="Yafa (Jaffa)"
+        data-subtitle="The 'Bride of the Sea'"
+        data-body="Once a vibrant Palestinian port city, called the 'Bride of the Sea'.
+        Its people were largely expelled in 1948, and its neighborhoods were folded into
+        the occupier’s coastal metropolis."
+        aria-label="Yafa (Jaffa)"
+      ></button>
+
+      <!-- Deir Yassin -->
+      <button
+        type="button"
+        class="map-marker"
+        style="top: 56%; left: 56%;"
+        data-title="Deir Yassin – 1948 massacre"
+        data-subtitle="Village near al-Quds"
+        data-body="In April 1948, Zionist militias attacked the Palestinian village of
+        Deir Yassin near al-Quds, killing, terrorizing, and expelling civilians as part
+        of the broader ethnic cleansing of the Nakba."
+        aria-label="Deir Yassin – 1948 massacre"
+      ></button>
+
+      <!-- Jenin camp -->
+      <button
+        type="button"
+        class="map-marker"
+        style="top: 24%; left: 56%;"
+        data-title="Jenin refugee camp"
+        data-subtitle="Camp in the northern West Bank"
+        data-body="Refugee camp repeatedly attacked with raids, demolitions, and killings
+        by occupation forces, especially during the Second Intifada and recent assaults.
+        A symbol of stubborn resistance."
+        aria-label="Jenin refugee camp"
+      ></button>
+    </div>
+
+    <!-- Info panel -->
+    <section class="map-info" id="map-info">
+      <h2 class="map-info-title" id="map-info-title">Click a place on the map</h2>
+      <p class="map-info-subtitle" id="map-info-subtitle">
+        Cities, camps, and massacre sites from colonized Palestine.
+      </p>
+      <p class="map-info-body" id="map-info-body">
+        Choose one of the red points above to read a short description. Later, this can be
+        expanded with dates, testimonies, links to oral histories, and archival material.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      © Returning to Haifa. Maps are never neutral – this one refuses erasure.
+    </div>
+  </footer>
+
+  <script>
+    const infoTitleEl    = document.getElementById('map-info-title');
+    const infoSubtitleEl = document.getElementById('map-info-subtitle');
+    const infoBodyEl     = document.getElementById('map-info-body');
+    const infoBox        = document.getElementById('map-info');
+
+    const markers = document.querySelectorAll('.map-marker');
+
+    function clearActiveMarkers() {
+      markers.forEach(m => m.classList.remove('active'));
+    }
+
+    markers.forEach(marker => {
+      marker.addEventListener('click', () => {
+        const title    = marker.getAttribute('data-title') || '';
+        const subtitle = marker.getAttribute('data-subtitle') || '';
+        const body     = marker.getAttribute('data-body') || '';
+
+        infoTitleEl.textContent    = title;
+        infoSubtitleEl.textContent = subtitle;
+        infoBodyEl.textContent     = body;
+
+        clearActiveMarkers();
+        marker.classList.add('active');
+
+        infoBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  </script>
+
+</body>
+</html>
