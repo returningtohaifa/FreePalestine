@@ -157,15 +157,15 @@
       opacity: 0.9;
     }
 
-    /* Zoom buttons – anchored inside the map, bottom-right */
+    /* Zoom buttons – fixed on screen, but constrained + hidden when map not visible */
     .map-controls {
-      position: absolute;
+      position: fixed;
       bottom: 16px;
-      right: 16px;
-      display: flex;
+      right: 16px; /* will be corrected by JS to align to map’s right edge */
+      display: none; /* initially hidden until JS decides */
       flex-direction: column;
       gap: 4px;
-      z-index: 10;
+      z-index: 9999;
     }
 
     .map-controls button {
@@ -298,12 +298,6 @@
           aria-label="Jenin area"
         ></button>
       </div>
-
-      <!-- Zoom controls INSIDE the map wrapper -->
-      <div class="map-controls" id="map-controls">
-        <button type="button" id="zoom-in" title="Zoom in">+</button>
-        <button type="button" id="zoom-out" title="Zoom out">−</button>
-      </div>
     </div>
 
     <!-- Info panel -->
@@ -321,6 +315,13 @@
         Helper: click anywhere on the map background to see suggested <code>top</code>/<code>left</code> percentages for placing or correcting a marker.
       </div>
     </section>
+
+    <!-- Zoom controls (fixed, constrained to map & hidden off-map) -->
+    <div class="map-controls" id="map-controls">
+      <button type="button" id="zoom-in" title="Zoom in">+</button>
+      <button type="button" id="zoom-out" title="Zoom out">−</button>
+    </div>
+
   </main>
 
   <footer>
@@ -339,6 +340,7 @@
       const markers        = document.querySelectorAll('.map-marker');
       const wrapper        = document.getElementById('map-wrapper');
       const zoomLayer      = document.getElementById('map-zoom-layer');
+      const zoomControls   = document.getElementById('map-controls');
       const zoomInBtn      = document.getElementById('zoom-in');
       const zoomOutBtn     = document.getElementById('zoom-out');
       const coordsHintEl   = document.getElementById('coords-hint');
@@ -474,13 +476,40 @@
         isDragging = false;
       });
 
-      // Initial center after layout
+      // === Keep zoom buttons visible only when map intersects viewport ===
+      function updateControlsPosition() {
+        const rect = wrapper.getBoundingClientRect();
+        const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+
+        const intersects = rect.bottom > 0 && rect.top < viewportHeight;
+
+        if (!intersects) {
+          zoomControls.style.display = 'none';
+          return;
+        }
+
+        // show and align horizontally with the map’s right edge
+        zoomControls.style.display = 'flex';
+
+        const rawRightOffset = window.innerWidth - rect.right + 16;
+        const rightOffset = Math.max(16, rawRightOffset); // never go past viewport edge
+        zoomControls.style.right = rightOffset + 'px';
+        zoomControls.style.bottom = '16px';
+      }
+
+      window.addEventListener('scroll', updateControlsPosition);
+      window.addEventListener('resize', updateControlsPosition);
+
       window.addEventListener('load', () => {
         scale = 1;
         measureBaseSize();
         centerMap();
         updateTransform();
+        updateControlsPosition();
       });
+
+      // In case DOMContentLoaded fires after load for some reason
+      updateControlsPosition();
     });
   </script>
 
