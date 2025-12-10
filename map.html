@@ -150,6 +150,13 @@
       font-size: 0.95rem;
     }
 
+    .coords-hint {
+      margin-top: 0.6rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      opacity: 0.9;
+    }
+
     /* Zoom buttons – fixed to viewport bottom-right */
     .map-controls {
       position: fixed;
@@ -221,7 +228,7 @@
           class="map-image"
         />
 
-        <!-- Markers -->
+        <!-- Markers (positions you can refine with the helper) -->
 
         <!-- al-Quds / Jerusalem -->
         <button
@@ -302,6 +309,9 @@
         in the 19th century. Later, these same locations can be linked to 20th-century wars,
         expulsions, refugee camps, and acts of resistance tied to the same land.
       </p>
+      <div class="coords-hint" id="coords-hint">
+        Helper: click anywhere on the map background to see suggested <code>top</code>/<code>left</code> percentages for placing or correcting a marker.
+      </div>
     </section>
 
     <!-- Zoom controls (fixed on screen) -->
@@ -330,6 +340,7 @@
       const zoomLayer      = document.getElementById('map-zoom-layer');
       const zoomInBtn      = document.getElementById('zoom-in');
       const zoomOutBtn     = document.getElementById('zoom-out');
+      const coordsHintEl   = document.getElementById('coords-hint');
 
       // Marker click behaviour
       function clearActiveMarkers() {
@@ -353,6 +364,24 @@
 
           infoBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
+      });
+
+      // === Helper: click on map background to get suggested top/left ===
+      zoomLayer.addEventListener('click', (event) => {
+        if (event.target.classList.contains('map-marker')) return;
+
+        const rect = zoomLayer.getBoundingClientRect();
+        const x = ((event.clientX - rect.left) / rect.width) * 100;
+        const y = ((event.clientY - rect.top)  / rect.height) * 100;
+
+        const topPercent  = y.toFixed(1);
+        const leftPercent = x.toFixed(1);
+
+        const text = `Suggested CSS → top: ${topPercent}%; left: ${leftPercent}%;  (paste into the marker style)`;
+        if (coordsHintEl) {
+          coordsHintEl.textContent = text;
+        }
+        console.log(text);
       });
 
       // === Zoom + pan (buttons only, with bounds) ===
