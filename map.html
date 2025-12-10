@@ -6,7 +6,7 @@
   <title>Map of Palestine – Returning to Haifa</title>
 
   <!-- Description for search / previews -->
-  <meta name="description" content="Historical map of Palestine with clickable markers for cities, camps, and massacre sites under occupation." />
+  <meta name="description" content="Late Ottoman-era map of Palestine (1870s) with clickable markers for cities, villages, and camps as they existed before partition and the Nakba." />
 
   <style>
     :root{
@@ -152,10 +152,9 @@
   <header>
     <div class="container">
       <h1>Map of Palestine</h1>
-      <div class="tagline">Historic Palestine. Our land, our places.</div>
+      <div class="tagline">Late Ottoman Palestine. Our land, our places.</div>
       <nav>
         <a href="index.html">← Home</a>
-      
       </nav>
     </div>
   </header>
@@ -163,10 +162,12 @@
   <main>
     <div class="container">
       <p class="intro">
-        Background: a 19th-century survey map of Palestine (PEF Survey of Western Palestine).
-        On top: Palestinian cities, refugee camps, and sites of massacre and siege.
-        Each marker can later be linked to testimonies, archives, and wars on Gaza
-        and the rest of the land.
+        Background: a 19th-century survey map of Palestine (PEF Survey of Western Palestine,
+        mapped between 1872–1877 under Ottoman rule). The population at this time was
+        overwhelmingly Palestinian Arabs – mostly Muslims, with Christian and smaller Jewish
+        communities in the cities and towns. On top of this map we mark cities, villages, and
+        camps whose names and people will later be targeted, displaced, or massacred in the
+        20th century.
       </p>
     </div>
 
@@ -174,22 +175,20 @@
     <div class="map-wrapper">
       <img
         src="palestine-map-1870s.jpg"
-        alt="PEF Survey of Western Palestine, 19th-century map of Palestine"
+        alt="PEF Survey of Western Palestine, 19th-century map of Palestine under Ottoman rule"
         class="map-image"
       />
 
-      <!-- Positions are rough; can be tweaked later by eye -->
+      <!-- Marker positions (approximate, tweakable later by eye) -->
 
-            <!-- al-Quds / Jerusalem -->
+      <!-- al-Quds / Jerusalem -->
       <button
         type="button"
         class="map-marker"
         style="top: 44%; left: 54%;"
         data-title="al-Quds (Jerusalem)"
-        data-subtitle="Central city of Palestine"
-        data-body="Central city of Palestine. Target of Judaization, settlement expansion,
-        and attempts to erase its Arab and Islamic identity. Palestinians face home demolitions,
-        residency revocations, and continuous repression."
+        data-subtitle="Late Ottoman district and religious center"
+        data-body="In the 1870s, al-Quds (Jerusalem) was an Ottoman district center with a majority of Arabic-speaking Muslim and Christian Palestinians, alongside a historic Jewish community. It was a religious, administrative, and trading hub long before foreign partition lines were imposed."
         aria-label="al-Quds (Jerusalem)"
       ></button>
 
@@ -198,12 +197,10 @@
         type="button"
         class="map-marker"
         style="top: 51%; left: 14%;"
-        data-title="Gaza – besieged strip"
-        data-subtitle="Blockaded coastal enclave"
-        data-body="One of the most densely populated places on earth, trapped under land,
-        sea, and air blockade. Repeated large-scale bombardments and massacres try to crush
-        its people, who insist on resistance and return."
-        aria-label="Gaza – besieged strip"
+        data-title="Gaza"
+        data-subtitle="Ottoman town and trade hub"
+        data-body="Gaza was an important town on the coastal road between Egypt and the rest of Greater Syria. In the late Ottoman period it was a center for agriculture and caravan trade, inhabited mainly by Palestinian Arabs, with life tied to surrounding villages and fields."
+        aria-label="Gaza"
       ></button>
 
       <!-- Haifa -->
@@ -212,10 +209,8 @@
         class="map-marker"
         style="top: 19%; left: 42%;"
         data-title="Haifa"
-        data-subtitle="Palestinian coastal city"
-        data-body="Palestinian coastal city on the Mediterranean. Its indigenous population
-        was largely expelled during the Nakba. Those who remain live under discrimination in
-        the 1948-occupied areas but keep the city's identity alive."
+        data-subtitle="Growing port town on the Mediterranean"
+        data-body="In the 19th century, Haifa was a small but growing port on the Bay of Haifa, under Ottoman administration. Its population was mostly Arab Muslims and Christians, with small Jewish and European communities, and it was beginning to develop as a regional maritime gateway."
         aria-label="Haifa"
       ></button>
 
@@ -225,10 +220,8 @@
         class="map-marker"
         style="top: 38%; left: 29%;"
         data-title="Yafa (Jaffa)"
-        data-subtitle="The 'Bride of the Sea'"
-        data-body="Once a vibrant Palestinian port city, called the 'Bride of the Sea'.
-        Its people were largely expelled in 1948, and its neighborhoods were folded into
-        the occupier’s coastal metropolis."
+        data-subtitle="Major Palestinian port city"
+        data-body="Yafa was the main port of Palestine, serving Jerusalem and the interior. In the 1870s it was a bustling Arab city known for citrus groves, soap production, and trade, with a largely Muslim and Christian Palestinian population and a growing role in Mediterranean commerce."
         aria-label="Yafa (Jaffa)"
       ></button>
 
@@ -237,25 +230,21 @@
         type="button"
         class="map-marker"
         style="top: 44%; left: 51%;"
-        data-title="Deir Yassin – 1948 massacre"
-        data-subtitle="Village near al-Quds"
-        data-body="In April 1948, Zionist militias attacked the Palestinian village of
-        Deir Yassin near al-Quds, killing, terrorizing, and expelling civilians as part
-        of the broader ethnic cleansing of the Nakba."
-        aria-label="Deir Yassin – 1948 massacre"
+        data-title="Deir Yassin"
+        data-subtitle="Agricultural village west of al-Quds"
+        data-body="Deir Yassin was a small Palestinian village west of al-Quds, sustained by agriculture and tied to surrounding villages and markets. On this 19th-century map it appears simply as part of the rural landscape – decades before it would be known for the 1948 massacre carried out there."
+        aria-label="Deir Yassin"
       ></button>
 
-      <!-- Jenin camp -->
+      <!-- Jenin camp / Jenin area -->
       <button
         type="button"
         class="map-marker"
         style="top: 28%; left: 58%;"
-        data-title="Jenin refugee camp"
-        data-subtitle="Camp in the northern West Bank"
-        data-body="Refugee camp repeatedly attacked with raids, demolitions, and killings
-        by occupation forces, especially during the Second Intifada and recent assaults.
-        A symbol of stubborn resistance."
-        aria-label="Jenin refugee camp"
+        data-title="Jenin area"
+        data-subtitle="Market town and surrounding villages"
+        data-body="In the late Ottoman period, Jenin was a small market town serving nearby villages in the northern highlands of Palestine. The population was overwhelmingly Palestinian Arab, living from agriculture and trade. The refugee camp that will later carry the name 'Jenin camp' did not yet exist."
+        aria-label="Jenin area"
       ></button>
 
     </div>
@@ -264,18 +253,19 @@
     <section class="map-info" id="map-info">
       <h2 class="map-info-title" id="map-info-title">Click a place on the map</h2>
       <p class="map-info-subtitle" id="map-info-subtitle">
-        Cities, camps, and massacre sites from colonized Palestine.
+        Cities, villages, and regions in late Ottoman Palestine, decades before partition and the Nakba.
       </p>
       <p class="map-info-body" id="map-info-body">
-        Choose one of the red points above to read a short description. Later, this can be
-        expanded with dates, testimonies, links to oral histories, and archival material.
+        Choose one of the red points above to read a short description of how this place existed
+        in the 19th century. Later, these same locations can be linked to 20th-century wars,
+        expulsions, refugee camps, and acts of resistance tied to the same land.
       </p>
     </section>
   </main>
 
   <footer>
     <div class="container">
-      © Returning to Haifa. Maps are never neutral – this one refuses erasure.
+      © Returning to Haifa. Maps are never neutral – this one insists Palestine was already full.
     </div>
   </footer>
 
