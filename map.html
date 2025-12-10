@@ -6,7 +6,7 @@
   <title>Map of Palestine – Returning to Haifa</title>
 
   <!-- Description for search / previews -->
-  <meta name="description" content="Late Ottoman-era map of Palestine (1870s) with clickable markers for cities, villages, and camps as they existed before partition and the Nakba." />
+  <meta name="description" content="Late Ottoman-era map of Palestine (1870s) with clickable markers for cities, villages, and areas as they existed before partition and the Nakba." />
 
   <style>
     :root{
@@ -136,12 +136,11 @@
       font-size: 0.95rem;
     }
 
-    /* small helper display for coordinates */
     .coords-hint {
       margin-top: 0.6rem;
       font-size: 0.8rem;
       color: var(--muted);
-      opacity: 0.85;
+      opacity: 0.9;
     }
 
     footer {
@@ -187,7 +186,7 @@
         class="map-image"
       />
 
-      <!-- Marker positions (approximate; now easy to refine using the coordinate helper) -->
+      <!-- Marker positions: initial guesses, will be refined with the click-helper -->
 
       <!-- al-Quds / Jerusalem -->
       <button
@@ -269,7 +268,7 @@
         expulsions, refugee camps, and acts of resistance tied to the same land.
       </p>
       <div class="coords-hint" id="coords-hint">
-        Helper: click anywhere on the map background to see suggested <code>top</code>/<code>left</code> percentages for placing a marker.
+        Helper: click anywhere on the map background to see suggested <code>top</code>/<code>left</code> percentages for placing or correcting a marker.
       </div>
     </section>
   </main>
@@ -295,7 +294,7 @@
 
     markers.forEach(marker => {
       marker.addEventListener('click', (event) => {
-        // prevent the map click handler from also firing
+        // don't let this click bubble to the mapWrapper
         event.stopPropagation();
 
         const title    = marker.getAttribute('data-title') || '';
@@ -313,23 +312,21 @@
       });
     });
 
-    // Helper: click on blank map areas to get % coordinates for new / corrected markers
+    // Helper: click on the map background to get % coords for a marker
     mapWrapper.addEventListener('click', (event) => {
-      // ignore clicks on existing markers (handled above)
       if (event.target.classList.contains('map-marker')) return;
 
       const rect = mapWrapper.getBoundingClientRect();
       const x = ((event.clientX - rect.left) / rect.width) * 100;
       const y = ((event.clientY - rect.top)  / rect.height) * 100;
 
-      const top  = y.toFixed(1);
-      const left = x.toFixed(1);
+      const topPercent  = y.toFixed(1);
+      const leftPercent = x.toFixed(1);
 
-      const text = `Suggested CSS: top: ${top}%; left: ${left}%;  ← copy these into the marker style.`;
+      const text = `Suggested CSS → top: ${topPercent}%; left: ${leftPercent}%;  (paste into the marker style)`;
       if (coordsHintEl) {
         coordsHintEl.textContent = text;
       }
-      // Also log to console for copy-paste
       console.log(text);
     });
   </script>
