@@ -83,13 +83,27 @@
       border: 1px solid var(--border);
       overflow: hidden;
       background: #050505;
-      position: relative; /* markers use this as reference */
+      position: relative;
+    }
+
+    .map-zoom-layer {
+      position: relative;
+      width: 100%;
+      height: auto;
+      transform-origin: 0 0;
+      cursor: grab;
+    }
+
+    .map-zoom-layer:active {
+      cursor: grabbing;
     }
 
     .map-image {
       width: 100%;
       height: auto;
       display: block;
+      user-select: none;
+      pointer-events: none; /* so clicks go “through” to the zoom layer / markers */
     }
 
     .map-marker {
@@ -151,25 +165,6 @@
       background: var(--panel);
       margin-top: 2rem;
     }
-    .map-zoom-layer {
-  position: relative;
-  width: 100%;
-  height: auto;
-  transform-origin: 0 0;
-  cursor: grab;
-}
-
-.map-zoom-layer:active {
-  cursor: grabbing;
-}
-
-.map-image {
-  width: 100%;
-  height: auto;
-  display: block;
-  user-select: none;
-  pointer-events: none;
-}
   </style>
 </head>
 
@@ -198,82 +193,82 @@
     </div>
 
     <!-- Map image + markers -->
-    <div class="map-wrapper" id="map-wrapper">
+    <div class="map-wrapper">
       <div class="map-zoom-layer" id="map-zoom-layer">
-      <img
-        src="palestine-map-1870s.jpg"
-        alt="PEF Survey of Western Palestine, 19th-century map of Palestine under Ottoman rule"
-        class="map-image"
-      />
+        <img
+          src="palestine-map-1870s.jpg"
+          alt="PEF Survey of Western Palestine, 19th-century map of Palestine under Ottoman rule"
+          class="map-image"
+        />
 
-      <!-- Marker positions: initial guesses, will be refined with the click-helper -->
+        <!-- Marker positions: initial guesses, can be refined with the click-helper -->
 
-      <!-- al-Quds / Jerusalem -->
-      <button
-        type="button"
-        class="map-marker"
-        style="top: 44%; left: 54%;"
-        data-title="al-Quds (Jerusalem)"
-        data-subtitle="Late Ottoman district and religious center"
-        data-body="In the 1870s, al-Quds (Jerusalem) was an Ottoman district center with a majority of Arabic-speaking Muslim and Christian Palestinians, alongside a historic Jewish community. It was a religious, administrative, and trading hub long before foreign partition lines were imposed."
-        aria-label="al-Quds (Jerusalem)"
-      ></button>
+        <!-- al-Quds / Jerusalem -->
+        <button
+          type="button"
+          class="map-marker"
+          style="top: 44%; left: 54%;"
+          data-title="al-Quds (Jerusalem)"
+          data-subtitle="Late Ottoman district and religious center"
+          data-body="In the 1870s, al-Quds (Jerusalem) was an Ottoman district center with a majority of Arabic-speaking Muslim and Christian Palestinians, alongside a historic Jewish community. It was a religious, administrative, and trading hub long before foreign partition lines were imposed."
+          aria-label="al-Quds (Jerusalem)"
+        ></button>
 
-      <!-- Gaza -->
-      <button
-        type="button"
-        class="map-marker"
-        style="top: 51%; left: 14%;"
-        data-title="Gaza"
-        data-subtitle="Ottoman town and trade hub"
-        data-body="Gaza was an important town on the coastal road between Egypt and the rest of Greater Syria. In the late Ottoman period it was a center for agriculture and caravan trade, inhabited mainly by Palestinian Arabs, with life tied to surrounding villages and fields."
-        aria-label="Gaza"
-      ></button>
+        <!-- Gaza -->
+        <button
+          type="button"
+          class="map-marker"
+          style="top: 51%; left: 14%;"
+          data-title="Gaza"
+          data-subtitle="Ottoman town and trade hub"
+          data-body="Gaza was an important town on the coastal road between Egypt and the rest of Greater Syria. In the late Ottoman period it was a center for agriculture and caravan trade, inhabited mainly by Palestinian Arabs, with life tied to surrounding villages and fields."
+          aria-label="Gaza"
+        ></button>
 
-      <!-- Haifa -->
-      <button
-        type="button"
-        class="map-marker"
-        style="top: 19%; left: 42%;"
-        data-title="Haifa"
-        data-subtitle="Growing port town on the Mediterranean"
-        data-body="In the 19th century, Haifa was a small but growing port on the Bay of Haifa, under Ottoman administration. Its population was mostly Arab Muslims and Christians, with small Jewish and European communities, and it was beginning to develop as a regional maritime gateway."
-        aria-label="Haifa"
-      ></button>
+        <!-- Haifa -->
+        <button
+          type="button"
+          class="map-marker"
+          style="top: 19%; left: 42%;"
+          data-title="Haifa"
+          data-subtitle="Growing port town on the Mediterranean"
+          data-body="In the 19th century, Haifa was a small but growing port on the Bay of Haifa, under Ottoman administration. Its population was mostly Arab Muslims and Christians, with small Jewish and European communities, and it was beginning to develop as a regional maritime gateway."
+          aria-label="Haifa"
+        ></button>
 
-      <!-- Yafa / Jaffa -->
-      <button
-        type="button"
-        class="map-marker"
-        style="top: 38%; left: 29%;"
-        data-title="Yafa (Jaffa)"
-        data-subtitle="Major Palestinian port city"
-        data-body="Yafa was the main port of Palestine, serving Jerusalem and the interior. In the 1870s it was a bustling Arab city known for citrus groves, soap production, and trade, with a largely Muslim and Christian Palestinian population and a growing role in Mediterranean commerce."
-        aria-label="Yafa (Jaffa)"
-      ></button>
+        <!-- Yafa / Jaffa -->
+        <button
+          type="button"
+          class="map-marker"
+          style="top: 38%; left: 29%;"
+          data-title="Yafa (Jaffa)"
+          data-subtitle="Major Palestinian port city"
+          data-body="Yafa was the main port of Palestine, serving Jerusalem and the interior. In the 1870s it was a bustling Arab city known for citrus groves, soap production, and trade, with a largely Muslim and Christian Palestinian population and a growing role in Mediterranean commerce."
+          aria-label="Yafa (Jaffa)"
+        ></button>
 
-      <!-- Deir Yassin -->
-      <button
-        type="button"
-        class="map-marker"
-        style="top: 44%; left: 51%;"
-        data-title="Deir Yassin"
-        data-subtitle="Agricultural village west of al-Quds"
-        data-body="Deir Yassin was a small Palestinian village west of al-Quds, sustained by agriculture and tied to surrounding villages and markets. On this 19th-century map it appears simply as part of the rural landscape – decades before it would be known for the 1948 massacre carried out there."
-        aria-label="Deir Yassin"
-      ></button>
+        <!-- Deir Yassin -->
+        <button
+          type="button"
+          class="map-marker"
+          style="top: 44%; left: 51%;"
+          data-title="Deir Yassin"
+          data-subtitle="Agricultural village west of al-Quds"
+          data-body="Deir Yassin was a small Palestinian village west of al-Quds, sustained by agriculture and tied to surrounding villages and markets. On this 19th-century map it appears simply as part of the rural landscape – decades before it would be known for the 1948 massacre carried out there."
+          aria-label="Deir Yassin"
+        ></button>
 
-      <!-- Jenin area -->
-      <button
-        type="button"
-        class="map-marker"
-        style="top: 28%; left: 58%;"
-        data-title="Jenin area"
-        data-subtitle="Market town and surrounding villages"
-        data-body="In the late Ottoman period, Jenin was a small market town serving nearby villages in the northern highlands of Palestine. The population was overwhelmingly Palestinian Arab, living from agriculture and trade. The refugee camp that will later carry the name 'Jenin camp' did not yet exist."
-        aria-label="Jenin area"
-      ></button>
-
+        <!-- Jenin area -->
+        <button
+          type="button"
+          class="map-marker"
+          style="top: 28%; left: 58%;"
+          data-title="Jenin area"
+          data-subtitle="Market town and surrounding villages"
+          data-body="In the late Ottoman period, Jenin was a small market town serving nearby villages in the northern highlands of Palestine. The population was overwhelmingly Palestinian Arab, living from agriculture and trade. The refugee camp that will later carry the name 'Jenin camp' did not yet exist."
+          aria-label="Jenin area"
+        ></button>
+      </div>
     </div>
 
     <!-- Info panel -->
@@ -289,7 +284,6 @@
       </p>
       <div class="coords-hint" id="coords-hint">
         Helper: click anywhere on the map background to see suggested <code>top</code>/<code>left</code> percentages for placing or correcting a marker.
-         </div>
       </div>
     </section>
   </main>
@@ -306,8 +300,8 @@
     const infoBodyEl     = document.getElementById('map-info-body');
     const infoBox        = document.getElementById('map-info');
     const markers        = document.querySelectorAll('.map-marker');
-    const mapWrapper     = document.getElementById('map-wrapper');
     const coordsHintEl   = document.getElementById('coords-hint');
+    const zoomLayer      = document.getElementById('map-zoom-layer');
 
     function clearActiveMarkers() {
       markers.forEach(m => m.classList.remove('active'));
@@ -315,7 +309,7 @@
 
     markers.forEach(marker => {
       marker.addEventListener('click', (event) => {
-        // don't let this click bubble to the mapWrapper
+        // don't let this click trigger zoom-layer click helper
         event.stopPropagation();
 
         const title    = marker.getAttribute('data-title') || '';
@@ -334,10 +328,10 @@
     });
 
     // Helper: click on the map background to get % coords for a marker
-    mapWrapper.addEventListener('click', (event) => {
+    zoomLayer.addEventListener('click', (event) => {
       if (event.target.classList.contains('map-marker')) return;
 
-      const rect = mapWrapper.getBoundingClientRect();
+      const rect = zoomLayer.getBoundingClientRect();
       const x = ((event.clientX - rect.left) / rect.width) * 100;
       const y = ((event.clientY - rect.top)  / rect.height) * 100;
 
@@ -350,55 +344,55 @@
       }
       console.log(text);
     });
+
+    // =========
+    // Zoom + pan
+    // =========
+    let scale = 1;
+    let originX = 0;
+    let originY = 0;
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+
+    function updateTransform() {
+      zoomLayer.style.transform =
+        `translate(${originX}px, ${originY}px) scale(${scale})`;
+    }
+
+    // Mouse wheel zoom
+    zoomLayer.addEventListener('wheel', (e) => {
+      e.preventDefault();
+
+      const zoomIntensity = 0.1;
+      const delta = e.deltaY < 0 ? 1 : -1;
+
+      scale += delta * zoomIntensity;
+      scale = Math.min(Math.max(1, scale), 4); // clamp zoom (1x to 4x)
+
+      updateTransform();
+    });
+
+    // Drag start
+    zoomLayer.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      startX = e.clientX - originX;
+      startY = e.clientY - originY;
+    });
+
+    // Drag move
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      originX = e.clientX - startX;
+      originY = e.clientY - startY;
+      updateTransform();
+    });
+
+    // Drag end
+    window.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
   </script>
- <script>
-  const zoomLayer = document.getElementById('map-zoom-layer');
-
-  let scale = 1;
-  let originX = 0;
-  let originY = 0;
-  let isDragging = false;
-  let startX = 0;
-  let startY = 0;
-
-  function updateTransform() {
-    zoomLayer.style.transform =
-      `translate(${originX}px, ${originY}px) scale(${scale})`;
-  }
-
-  // Mouse wheel zoom
-  zoomLayer.addEventListener('wheel', (e) => {
-    e.preventDefault();
-
-    const zoomIntensity = 0.1;
-    const delta = e.deltaY < 0 ? 1 : -1;
-
-    scale += delta * zoomIntensity;
-    scale = Math.min(Math.max(1, scale), 4); // clamp zoom (1x to 4x)
-
-    updateTransform();
-  });
-
-  // Drag start
-  zoomLayer.addEventListener('mousedown', (e) => {
-    isDragging = true;
-    startX = e.clientX - originX;
-    startY = e.clientY - originY;
-  });
-
-  // Drag move
-  window.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    originX = e.clientX - startX;
-    originY = e.clientY - startY;
-    updateTransform();
-  });
-
-  // Drag end
-  window.addEventListener('mouseup', () => {
-    isDragging = false;
-  });
-</script>
 
 </body>
 </html>
