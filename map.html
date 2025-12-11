@@ -446,7 +446,7 @@
         } else {
           scale -= step;
         }
-        scale = Math.min(Math.max(1, scale), 4);
+        scale = Math.min(Math.max(1, scale), 6);  // ⬅️ THIS is your zoom limit
         updateTransform();
       }
 
